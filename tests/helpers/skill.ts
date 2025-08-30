@@ -28,7 +28,7 @@ export function addCommonSkillEffects() {
     type: 'passive',
     name: '体力回復',
     description: '2ターンに1回体力を100%回復する',
-    apply: ({ characterState }) => {
+    apply: ({}) => {
       return {
         totalDamage: 0, // 体力を100%回復
       };
