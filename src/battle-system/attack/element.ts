@@ -1,4 +1,4 @@
-import { Element, ELEMENT_RELATIONS } from '@/battle-system/element';
+import { Element, ELEMENT_RELATIONS } from '../element';
 
 export function getElementMultiplier({
   attackerElement,

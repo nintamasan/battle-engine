@@ -1,4 +1,4 @@
-import { CharacterSchema } from '@/character';
+import { CharacterSchema } from '../../src/character';
 import { readFileSync } from 'fs';
 import { parse } from 'yaml';
 

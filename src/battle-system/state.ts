@@ -1,7 +1,7 @@
-import { CalculatedSkillEffect } from '@/battle-system/types';
-import { getAwakeningRatio } from '@/battle-system/state/awakening';
+import { CalculatedSkillEffect } from './types';
+import { getAwakeningRatio } from './state/awakening';
 import { calculateSkillEffects } from './state/skillEffect';
-import { Character } from '@/character';
+import { Character } from '../character';
 
 export type CharacterState = {
   maxHp: number;

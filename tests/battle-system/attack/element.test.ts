@@ -1,4 +1,7 @@
-import { Element, getElementMultiplier } from '@/battle-system/element';
+import {
+  Element,
+  getElementMultiplier,
+} from '../../../src/battle-system/element';
 
 describe('属性相性システム', () => {
   test.each([

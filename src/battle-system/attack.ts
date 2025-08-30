@@ -1,6 +1,6 @@
-import { getElementMultiplier } from '@/battle-system/element';
-import { CharacterState } from '@/battle-system/state';
-import { getEffectivenessMultiplier } from '@/battle-system/attack/effectiveness';
+import { getElementMultiplier } from './element';
+import { CharacterState } from './state';
+import { getEffectivenessMultiplier } from './attack/effectiveness';
 
 export function executeAttack({
   attackerState,

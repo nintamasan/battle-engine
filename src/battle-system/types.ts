@@ -1,6 +1,6 @@
-import { CharacterState } from '@/battle-system/state';
-import { SkillEffectType } from '@/battle-system/state/skillEffect';
-import { Skill } from '@/battle-system/skill';
+import { CharacterState } from './state';
+import { SkillEffectType } from './state/skillEffect';
+import { Skill } from './skill';
 
 // バトル結果
 export type BattleResult = 'victory' | 'lose' | 'mutual-strike' | 'draw';

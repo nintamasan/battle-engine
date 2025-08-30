@@ -1,7 +1,10 @@
-import { calculateInitialState, CharacterState } from '@/battle-system/state';
-import { calculateSkillEffects } from '@/battle-system/state/skillEffect';
-import { loadFireHeroineFixture } from 'tests/helpers/fixtures';
-import { addCommonSkillEffects } from 'tests/helpers/skill';
+import {
+  calculateInitialState,
+  CharacterState,
+} from '../../../src/battle-system/state';
+import { calculateSkillEffects } from '../../../src/battle-system/state/skillEffect';
+import { loadFireHeroineFixture } from '../../helpers/fixtures';
+import { addCommonSkillEffects } from '../../helpers/skill';
 
 describe('SkillEffect', () => {
   beforeAll(() => {

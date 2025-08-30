@@ -2,13 +2,16 @@ import {
   calculateSkillSuccessRate,
   executeActiveSkills,
   executePassiveSkills,
-} from '@/battle-system/skill';
-import { calculateInitialState, CharacterState } from '@/battle-system/state';
+} from '../../src/battle-system/skill';
+import {
+  calculateInitialState,
+  CharacterState,
+} from '../../src/battle-system/state';
 import {
   loadFireHeroineFixture,
   loadWaterHeroineFixture,
-} from 'tests/helpers/fixtures';
-import { addCommonSkillEffects } from 'tests/helpers/skill';
+} from '../helpers/fixtures';
+import { addCommonSkillEffects } from '../helpers/skill';
 
 describe('スキルシステム', () => {
   beforeAll(() => {

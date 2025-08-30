@@ -1,4 +1,4 @@
-import { getEffectivenessMultiplier } from '@/battle-system/attack/effectiveness';
+import { getEffectivenessMultiplier } from '../../../src/battle-system/attack/effectiveness';
 
 describe('判断力システム', () => {
   test.each([

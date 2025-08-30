@@ -1,10 +1,10 @@
-import { CharacterState } from '@/battle-system//state';
-import { ExecutedSkill } from '@/battle-system//types';
+import { CharacterState } from './state';
+import { ExecutedSkill } from './types';
 import {
   assertSkillEffectType,
   SKILL_EFFECT,
   SkillEffectType,
-} from '@/battle-system/state/skillEffect';
+} from './state/skillEffect';
 import z from 'zod';
 
 export const SkillSchema = z.object({

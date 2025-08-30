@@ -1,4 +1,4 @@
-import { addSkillEffect } from '@/battle-system/state/skillEffect';
+import { addSkillEffect } from '../../src/battle-system/state/skillEffect';
 
 export function addCommonSkillEffects() {
   addSkillEffect('poison', {

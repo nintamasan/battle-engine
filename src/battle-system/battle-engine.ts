@@ -4,20 +4,17 @@ import {
   type BattleConfig,
   CalculatedSkillEffect,
   ExecutedSkill,
-} from '@/battle-system/types.js';
+} from './types.js';
 import {
   calculateInitialState,
   calculateState,
   CharacterState,
   formatState,
   getRemainedHp,
-} from '@/battle-system/state';
-import {
-  executeActiveSkills,
-  executePassiveSkills,
-} from '@/battle-system/skill';
-import { executeAttack } from '@/battle-system/attack';
-import { Character } from '@/character';
+} from './state';
+import { executeActiveSkills, executePassiveSkills } from './skill';
+import { executeAttack } from './attack';
+import { Character } from '../character';
 
 export class BattleEngine {
   private config: BattleConfig;

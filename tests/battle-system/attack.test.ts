@@ -1,6 +1,6 @@
-import { executeAttack } from '@/battle-system/attack';
-import { calculateInitialState } from '@/battle-system/state';
-import { loadFireHeroineFixture } from 'tests/helpers/fixtures';
+import { executeAttack } from '../../src/battle-system/attack';
+import { calculateInitialState } from '../../src/battle-system/state';
+import { loadFireHeroineFixture } from '../helpers/fixtures';
 
 describe('ダメージ計算', () => {
   it('ヒロインの判断力が高い場合、ヒロインが受けるダメージが軽減される', () => {

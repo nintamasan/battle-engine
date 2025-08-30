@@ -1,5 +1,5 @@
-import { CharacterState } from '@/battle-system/state';
-import { CalculatedSkillEffect } from '@/battle-system/types';
+import { CharacterState } from '../state';
+import { CalculatedSkillEffect } from '../types';
 import z from 'zod';
 
 export const AppliedSkillEffectSchema = z.object({

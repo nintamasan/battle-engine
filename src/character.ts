@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { ElementSchema } from '@/battle-system/element';
-import { SkillSchema } from '@/battle-system/skill';
-import { AppliedSkillEffectSchema } from '@/battle-system/state/skillEffect';
-import { AwakeningSchema } from '@/battle-system/state/awakening';
+import { ElementSchema } from './battle-system/element';
+import { SkillSchema } from './battle-system/skill';
+import { AppliedSkillEffectSchema } from './battle-system/state/skillEffect';
+import { AwakeningSchema } from './battle-system/state/awakening';
 
 export const CharacterSchema = z
   .object({

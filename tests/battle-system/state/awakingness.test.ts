@@ -1,4 +1,4 @@
-import { getAwakeningRatio } from '@/battle-system/state/awakening';
+import { getAwakeningRatio } from '../../../src/battle-system/state/awakening';
 
 describe('覚醒値', () => {
   test.each([

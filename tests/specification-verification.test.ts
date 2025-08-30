@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { BattleEngine } from '@/battle-system/battle-engine.js';
-import { defaultEngineConfig } from 'tests/helpers/config';
+import { BattleEngine } from '../src/battle-system/battle-engine.js';
+import { defaultEngineConfig } from './helpers/config';
 import {
   loadFireHeroineFixture,
   loadWaterHeroineFixture,
 } from './helpers/fixtures';
-import { Character } from '@/character';
+import { Character } from '../src/character';
 import { addCommonSkillEffects } from './helpers/skill';
 
 const trashEnemyStats: Omit<Character, 'element'> = {
