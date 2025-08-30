@@ -1,0 +1,31 @@
+# Source files
+src/
+tests/
+docs/
+
+# Configuration files
+tsconfig.json
+vitest.config.ts
+.oxlintrc.json
+.prettierrc
+.prettierignore
+.cursor/
+
+# Development files
+.git/
+.gitignore
+.github/
+
+# Dependencies
+node_modules/
+
+# Build artifacts (except dist)
+*.tsbuildinfo
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
