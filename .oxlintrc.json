@@ -1,0 +1,14 @@
+{
+  "typescript": {
+    "enabled": true
+  },
+  "rules": {
+    "no-unused-vars": "error",
+    "no-console": "warn",
+    "prefer-const": "error",
+    "no-var": "error",
+    "eqeqeq": "error",
+    "curly": "error",
+    "no-duplicate-imports": "error"
+  }
+}

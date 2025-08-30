@@ -1,0 +1,15 @@
+id: water_heroine
+name: 水のヒロイン
+type: hero
+element: water
+
+vitality: 40
+intelligence: 100
+spirit: 40
+fatigue: 0
+
+awakening:
+  ratio: 10
+
+skills: []
+activeEffects: []

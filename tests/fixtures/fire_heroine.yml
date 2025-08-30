@@ -1,0 +1,15 @@
+id: fire_heroine
+name: 火のヒロイン
+type: hero
+element: fire
+
+vitality: 100
+intelligence: 20
+spirit: 60
+fatigue: 0
+
+awakening:
+  ratio: 10
+
+skills: []
+activeEffects: []

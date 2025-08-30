@@ -1,0 +1,15 @@
+id: wind_heroine
+name: 風のヒロイン
+type: hero
+element: wind
+
+vitality: 60
+intelligence: 60
+spirit: 80
+fatigue: 0
+
+awakening:
+  ratio: 10
+
+skills: []
+activeEffects: []
