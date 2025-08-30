@@ -1,6 +1,6 @@
 {
   "name": "@nintamasan/battle-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "type:check": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
