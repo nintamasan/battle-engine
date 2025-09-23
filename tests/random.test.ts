@@ -7,10 +7,10 @@ import {
 } from 'src/battle-system/random';
 
 //               A   LA   LD    D   MD
-// 0.5 vs 1 => 100 / 79 / 50 /    / 33
-// 0.8 vs 1 =>  83 / 66 / 39 /    / 11
-// 1   vs 1 =>  74 / 59 / 33 / 17 /  0
-// 1.2 vs 1 =>  68 / 48 / 18 /  0
+// 0.5 vs 1 => 100 / 79 / 50 / 41 / 33
+// 0.8 vs 1 =>  83 / 66 / 39 / 22 / 11
+// 1   vs 1 =>  74 / 59 / 33 / 12 /  0
+// 1.2 vs 1 =>  68 / 48 / 18 /  4
 // 1.5 vs 1 =>  50 / 31 /  0
 // 2   vs 1 =>  26 / 0
 
@@ -116,6 +116,7 @@ describe(getDefensableRandomResult, () => {
     { defender: 0.8, attacker: 1, ratio: 22 },
     { defender: 1, attacker: 1, ratio: 12 },
     { defender: 1.2, attacker: 1, ratio: 4 },
+    { defender: 1.3, attacker: 1, ratio: 1 },
   ])(
     'with defender:$defender attacker:$attacker attacker wins $ratio percent',
     ({ attacker, defender, ratio }) => {
