@@ -29,7 +29,7 @@ export function getRandomResult({
 
   if (logger) {
     logger.error(
-      `${message ?? `[${message}]`}expected: defender: ${left} vs attacker: ${right}: ${1 - right / left}`
+      `${message ? `[${message}]` : ''}expected: defender: ${left} vs attacker: ${right}: ${1 - right / left}`
     );
     logger.error(`actual: ${left * leftRandom} vs ${right * rightRandom}`);
   }
@@ -45,11 +45,13 @@ export function getAttackableRandomResult({
   attacker,
   defender,
   random = Math.random(),
+  message,
   logger,
 }: {
   attacker: number;
   defender: number;
   random?: number;
+  message?: string;
   logger?: Console;
 }): boolean {
   const numerator = defender - attacker * 0.5; // defender - attacker は強すぎるので調整
@@ -62,7 +64,7 @@ export function getAttackableRandomResult({
 
   if (logger) {
     logger.error(
-      `expected: defender:${defender} vs attacker: ${attacker}: ${1 - numerator / denominator}`
+      `${message ? `[${message}]` : ''}expected: defender:${defender} vs attacker: ${attacker}: ${1 - numerator / denominator}`
     );
     logger.error(`actual: ${numerator} vs ${denominator * (1 - random)}`);
   }
@@ -77,11 +79,13 @@ export function getLessAttackableRandomResult({
   attacker,
   defender,
   random = Math.random(),
+  message,
   logger,
 }: {
   attacker: number;
   defender: number;
   random?: number;
+  message?: string;
   logger?: Console;
 }): boolean {
   const numerator = defender - attacker * 0.2;
@@ -96,7 +100,7 @@ export function getLessAttackableRandomResult({
 
   if (logger) {
     logger.error(
-      `expected: defender:${defender} vs attacker: ${attacker}: ${1 - numerator / denominator}`
+      `${message ? `[${message}]` : ''}expected: defender:${defender} vs attacker: ${attacker}: ${1 - numerator / denominator}`
     );
     logger.error(`actual: ${numerator} vs ${denominator * (1 - random)}`);
   }
@@ -111,11 +115,13 @@ export function getLessDefensableRandomResult({
   attacker,
   defender,
   random = Math.random(),
+  message,
   logger,
 }: {
   attacker: number;
   defender: number;
   random?: number;
+  message?: string;
   logger?: Console;
 }): boolean {
   const numerator = attacker - defender * 0.66;
@@ -127,7 +133,37 @@ export function getLessDefensableRandomResult({
 
   if (logger) {
     logger.error(
-      `expected: defender:${defender} vs attacker: ${attacker}: ${numerator / denominator}`
+      `${message ? `[${message}]` : ''}expected: defender:${defender} vs attacker: ${attacker}: ${numerator / denominator}`
+    );
+    logger.error(`actual: ${numerator} vs ${denominator * random}`);
+  }
+
+  return numerator / denominator > threshold;
+}
+
+/*
+ * 互角なら8ターンに一度程度の確率
+ */
+export function getDefensableRandomResult({
+  attacker,
+  defender,
+  random = Math.random(),
+  message,
+  logger,
+}: {
+  attacker: number;
+  defender: number;
+  random?: number;
+  message?: string;
+  logger?: Console;
+}): boolean {
+  const numerator = attacker - defender * 0.75;
+  const denominator = attacker + defender;
+  const threshold = random;
+
+  if (logger) {
+    logger.error(
+      `${message ? `[${message}]` : ''}expected:defender:${defender} vs attacker: ${attacker}: ${numerator / denominator}`
     );
     logger.error(`actual: ${numerator} vs ${denominator * random}`);
   }
@@ -138,15 +174,17 @@ export function getLessDefensableRandomResult({
 /*
  * defender が有利な場合に使う (defender > attacker だと 100%防衛)
  */
-export function getDefensableRandomResult({
+export function getMoreDefensableRandomResult({
   attacker,
   defender,
   random = Math.random(),
+  message,
   logger,
 }: {
   attacker: number;
   defender: number;
   random?: number;
+  message?: string;
   logger?: Console;
 }): boolean {
   const numerator = attacker - defender;
@@ -155,7 +193,7 @@ export function getDefensableRandomResult({
 
   if (logger) {
     logger.error(
-      `expected:defender:${defender} vs attacker: ${attacker}: ${numerator / denominator}`
+      `${message ? `[${message}]` : ''}expected:defender:${defender} vs attacker: ${attacker}: ${numerator / denominator}`
     );
     logger.error(`actual: ${numerator} vs ${denominator * random}`);
   }

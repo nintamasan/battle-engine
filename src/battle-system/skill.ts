@@ -1,3 +1,4 @@
+import { getLessAttackableRandomResult } from './random';
 import type { CharacterState } from './state';
 import type { SkillEffectMap } from './state/skillEffect';
 import type { ExecutedSkill } from './types';
@@ -16,20 +17,6 @@ export const SkillSchema = z.object({
 
 export type Skill = z.infer<typeof SkillSchema>;
 
-export function calculateSkillSuccessRate({
-  attackerIntelligence,
-  defenderSpirit,
-}: {
-  attackerIntelligence: number;
-  defenderSpirit: number;
-}): number {
-  return Math.max(
-    0,
-    (attackerIntelligence - defenderSpirit / 2) /
-      (attackerIntelligence + defenderSpirit * 2)
-  );
-}
-
 export function executeActiveSkills({
   attackerState,
   defenderState,
@@ -41,10 +28,6 @@ export function executeActiveSkills({
   skillEffects: SkillEffectMap;
   turn: number;
 }): [CharacterState, ExecutedSkill[]] {
-  const skillSuccessRate = calculateSkillSuccessRate({
-    attackerIntelligence: attackerState.intelligence,
-    defenderSpirit: defenderState.spirit,
-  });
   const executedSkills: ExecutedSkill[] = [];
 
   for (const skill of attackerState.stats.skills) {
@@ -56,7 +39,13 @@ export function executeActiveSkills({
     // passive は処理しない
     if (skillEffect.type !== 'active') continue;
 
-    if (Math.random() <= skillSuccessRate) {
+    if (
+      getLessAttackableRandomResult({
+        attacker: attackerState.intelligence,
+        defender: defenderState.spirit,
+        message: skill.name,
+      })
+    ) {
       // 重ねがけチェック
       if (
         skill.stackable ||

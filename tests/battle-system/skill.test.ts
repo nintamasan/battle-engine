@@ -1,5 +1,4 @@
 import {
-  calculateSkillSuccessRate,
   executeActiveSkills,
   executePassiveSkills,
 } from '../../src/battle-system/skill';
@@ -14,24 +13,6 @@ import {
 import { commonSkillEffectsFixtures } from '../helpers/skill';
 
 describe('スキルシステム', () => {
-  describe('スキルの成功率計算', () => {
-    test.each([
-      { attackerIntelligence: 100, defenderSpirit: 0, expected: 1.0 },
-      { attackerIntelligence: 0, defenderSpirit: 100, expected: 0 },
-      // 互角なら6ターンに一度ほど
-      { attackerIntelligence: 100, defenderSpirit: 100, expected: 0.17 },
-    ])(
-      '攻撃側の判断力が $attackerIntelligence で守備側の精神力が $defenderSpilit なら $expected になる',
-      ({ attackerIntelligence, defenderSpirit, expected }) => {
-        const successRate = calculateSkillSuccessRate({
-          attackerIntelligence,
-          defenderSpirit,
-        });
-        expect(successRate).toBeCloseTo(expected, 2);
-      }
-    );
-  });
-
   describe('パッシブスキルの実行', () => {
     it('パッシブスキルが付与できる', () => {
       const heroState: CharacterState = calculateInitialState({

@@ -1,16 +1,18 @@
 import {
   getAttackableRandomResult,
-  getDefensableRandomResult,
+  getMoreDefensableRandomResult,
   getLessAttackableRandomResult,
   getLessDefensableRandomResult,
+  getDefensableRandomResult,
 } from 'src/battle-system/random';
 
-// 0.5 vs 1 => 100 / 79 / 50 / 33
-// 0.8 vs 1 =>  83 / 66 / 39 / 11
-// 1   vs 1 =>  74 / 59 / 33 /  0
-// 1.2 vs 1 =>  68 / 48 / 18
+//               A   LA   LD    D   MD
+// 0.5 vs 1 => 100 / 79 / 50 /    / 33
+// 0.8 vs 1 =>  83 / 66 / 39 /    / 11
+// 1   vs 1 =>  74 / 59 / 33 / 17 /  0
+// 1.2 vs 1 =>  68 / 48 / 18 /  0
 // 1.5 vs 1 =>  50 / 31 /  0
-// 2   vs 1 =>  26 /  0
+// 2   vs 1 =>  26 / 0
 
 describe(getAttackableRandomResult, () => {
   test.each([
@@ -110,12 +112,10 @@ describe(getLessDefensableRandomResult, () => {
 
 describe(getDefensableRandomResult, () => {
   test.each([
-    { defender: 0.1, attacker: 1, ratio: 81 },
-    { defender: 0.2, attacker: 1, ratio: 66 },
-    { defender: 0.34, attacker: 1, ratio: 49 }, // 相手が 1/3 程度でも50%しか勝てない
-    { defender: 0.5, attacker: 1, ratio: 33 },
-    { defender: 0.8, attacker: 1, ratio: 11 },
-    { defender: 0.9, attacker: 1, ratio: 5 },
+    { defender: 0.5, attacker: 1, ratio: 41 },
+    { defender: 0.8, attacker: 1, ratio: 22 },
+    { defender: 1, attacker: 1, ratio: 12 },
+    { defender: 1.2, attacker: 1, ratio: 4 },
   ])(
     'with defender:$defender attacker:$attacker attacker wins $ratio percent',
     ({ attacker, defender, ratio }) => {
@@ -130,6 +130,37 @@ describe(getDefensableRandomResult, () => {
 
       expect(
         getDefensableRandomResult({
+          attacker,
+          defender,
+          random: (ratio + 1) / 100,
+        })
+      ).toEqual(false);
+    }
+  );
+});
+
+describe(getMoreDefensableRandomResult, () => {
+  test.each([
+    { defender: 0.1, attacker: 1, ratio: 81 },
+    { defender: 0.2, attacker: 1, ratio: 66 },
+    { defender: 0.34, attacker: 1, ratio: 49 }, // 相手が 1/3 程度でも50%しか勝てない
+    { defender: 0.5, attacker: 1, ratio: 33 },
+    { defender: 0.8, attacker: 1, ratio: 11 },
+    { defender: 0.9, attacker: 1, ratio: 5 },
+  ])(
+    'with defender:$defender attacker:$attacker attacker wins $ratio percent',
+    ({ attacker, defender, ratio }) => {
+      expect(
+        getMoreDefensableRandomResult({
+          attacker,
+          defender,
+          random: ratio / 100,
+          //   logger: console,
+        })
+      ).toEqual(true);
+
+      expect(
+        getMoreDefensableRandomResult({
           attacker,
           defender,
           random: (ratio + 1) / 100,
