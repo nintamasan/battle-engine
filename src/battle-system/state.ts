@@ -1,7 +1,7 @@
-import { CalculatedSkillEffect } from './types';
+import type { CalculatedSkillEffect } from './types';
 import { getAwakeningRatio } from './state/awakening';
-import { calculateSkillEffects } from './state/skillEffect';
-import { Character } from '../character';
+import { calculateSkillEffects, type SkillEffect } from './state/skillEffect';
+import type { Character } from '../character';
 
 export type CharacterState = {
   maxHp: number;
@@ -26,9 +26,11 @@ export function calculateInitialState(stats: Character): CharacterState {
 
 export function calculateState({
   beforeState,
+  skillEffects,
   turn,
 }: {
   beforeState: CharacterState;
+  skillEffects: Record<string, SkillEffect>;
   turn: number;
 }): [CharacterState, Omit<CalculatedSkillEffect, 'target'>[]] {
   const stats = beforeState.stats;
@@ -51,7 +53,7 @@ export function calculateState({
   };
 
   // デバフの適用
-  return calculateSkillEffects({ state, turn });
+  return calculateSkillEffects({ state, turn, skillEffects });
 }
 
 function calculateMaxHp({

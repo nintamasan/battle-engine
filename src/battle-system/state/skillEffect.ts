@@ -1,12 +1,9 @@
-import { CharacterState } from '../state';
-import { CalculatedSkillEffect } from '../types';
-import z from 'zod';
+import type { CharacterState } from '../state';
+import type { CalculatedSkillEffect } from '../types';
+import { z } from 'zod';
 
 export const AppliedSkillEffectSchema = z.object({
-  type: z.string().transform((string): SkillEffectType => {
-    assertSkillEffectType(string);
-    return string;
-  }),
+  type: z.string(),
   duration: z.number().int().min(1), // 残りターン数は1以上
   stackable: z.boolean(), // 重ねがけ可能かどうか
 });
@@ -29,28 +26,21 @@ export type SkillEffect = {
     | undefined;
 };
 
-export const SKILL_EFFECT: Record<string, SkillEffect> = {};
-
-export function addSkillEffect(id: string, effect: SkillEffect) {
-  if (id in SKILL_EFFECT) {
-    throw new Error(`Skill effect with id ${id} already exists.`);
-  }
-  SKILL_EFFECT[id] = effect;
-}
-
 export function calculateSkillEffects({
   state,
+  skillEffects,
 }: {
   state: CharacterState;
   turn: number;
+  skillEffects: Record<string, SkillEffect>;
 }): [CharacterState, CalculatedSkillEffect[]] {
-  const affectedEffectsCounter: { [x in SkillEffectType]?: number } = {};
+  const affectedEffectsCounter: { [x in string]?: number } = {};
   const calculatedSkillEffects: CalculatedSkillEffect[] = [];
 
   for (const effect of state.stats.activeEffects) {
     if (effect.duration <= 0) continue;
 
-    const skill = SKILL_EFFECT[effect.type];
+    const skill = skillEffects[effect.type];
     if (skill) {
       const appliedCount = affectedEffectsCounter[effect.type] ?? 0;
       if (effect.stackable || appliedCount === 0) {
@@ -77,13 +67,3 @@ export function calculateSkillEffects({
 
   return [state, calculatedSkillEffects];
 }
-
-export function assertSkillEffectType(
-  type: string
-): asserts type is SkillEffectType {
-  if (!(type in SKILL_EFFECT)) {
-    throw new Error(`Unknown skill effect type: ${type}`);
-  }
-}
-
-export type SkillEffectType = keyof typeof SKILL_EFFECT;

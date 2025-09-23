@@ -23,6 +23,7 @@ export class BattleEngine {
     this.config = {
       maxTurns: 12,
       baseDamageRatio: 0.2, // 1/5
+      skillEffects: {},
       ...config,
     };
   }
@@ -141,12 +142,14 @@ export class BattleEngine {
       executeActiveSkills({
         attackerState: beforeHeroState,
         defenderState: beforeEnemyState,
+        skillEffects: this.config.skillEffects,
         turn,
       });
     const [effectedHeroState, executedActiveSkillsToHero] = executeActiveSkills(
       {
         attackerState: beforeEnemyState,
         defenderState: beforeHeroState,
+        skillEffects: this.config.skillEffects,
         turn,
       }
     );
@@ -189,10 +192,12 @@ export class BattleEngine {
     // effects や awakening の影響を受ける
     const [currentHeroState, heroAffects] = calculateState({
       beforeState: beforeHeroState,
+      skillEffects: this.config.skillEffects,
       turn,
     });
     const [currentEnemyState, enemyAffects] = calculateState({
       beforeState: beforeEnemyState,
+      skillEffects: this.config.skillEffects,
       turn,
     });
 
@@ -269,6 +274,7 @@ export class BattleEngine {
       // defenderState: currentEnemyState,
       damageDealt,
       damageReceived,
+      skillEffects: this.config.skillEffects,
       turn,
     });
 

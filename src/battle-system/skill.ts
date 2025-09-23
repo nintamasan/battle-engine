@@ -1,19 +1,12 @@
-import { CharacterState } from './state';
-import { ExecutedSkill } from './types';
-import {
-  assertSkillEffectType,
-  SKILL_EFFECT,
-  SkillEffectType,
-} from './state/skillEffect';
-import z from 'zod';
+import type { CharacterState } from './state';
+import type { SkillEffect } from './state/skillEffect';
+import type { ExecutedSkill } from './types';
+import { z } from 'zod';
 
 export const SkillSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
-  effect: z.string().transform((string): SkillEffectType => {
-    assertSkillEffectType(string);
-    return string;
-  }),
+  effect: z.string(),
   duration: z.number().int().min(1), // 残りターン数は1以上
   stackable: z.boolean(), // 重ねがけ可能かどうか
   // クールタイム
@@ -40,10 +33,12 @@ export function calculateSkillSuccessRate({
 export function executeActiveSkills({
   attackerState,
   defenderState,
+  skillEffects,
   turn,
 }: {
   attackerState: CharacterState;
   defenderState: CharacterState;
+  skillEffects: Record<string, SkillEffect>;
   turn: number;
 }): [CharacterState, ExecutedSkill[]] {
   const skillSuccessRate = calculateSkillSuccessRate({
@@ -55,7 +50,7 @@ export function executeActiveSkills({
   for (const skill of attackerState.stats.skills) {
     if (skill.coolDownEndTurn > turn) continue;
 
-    const skillEffect = SKILL_EFFECT[skill.effect];
+    const skillEffect = skillEffects[skill.effect];
     if (!skillEffect) throw new Error(`Unknown skill effect: ${skill.effect}`);
 
     // passive は処理しない
@@ -90,12 +85,14 @@ export function executePassiveSkills({
   // defenderState,
   damageDealt,
   damageReceived,
+  skillEffects,
   turn,
 }: {
   attackerState: CharacterState;
   // defenderState: CharacterState;
   damageDealt: number | null;
   damageReceived: number | null;
+  skillEffects: Record<string, SkillEffect>;
   turn: number;
 }): {
   attackerState: CharacterState;
@@ -123,7 +120,7 @@ export function executePassiveSkills({
     // クールダウン中はスキップ
     if (skill.coolDownEndTurn > turn) continue;
 
-    const skillEffect = SKILL_EFFECT[skill.effect];
+    const skillEffect = skillEffects[skill.effect];
     if (!skillEffect) throw new Error(`Unknown skill effect: ${skill.effect}`);
 
     // active は処理しない

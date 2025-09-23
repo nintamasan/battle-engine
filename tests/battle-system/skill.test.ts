@@ -11,13 +11,9 @@ import {
   loadFireHeroineFixture,
   loadWaterHeroineFixture,
 } from '../helpers/fixtures';
-import { addCommonSkillEffects } from '../helpers/skill';
+import { commonSkillEffectsFixtures } from '../helpers/skill';
 
 describe('スキルシステム', () => {
-  beforeAll(() => {
-    addCommonSkillEffects();
-  });
-
   describe('スキルの成功率計算', () => {
     test.each([
       { attackerIntelligence: 100, defenderSpirit: 0, expected: 1.0 },
@@ -66,6 +62,7 @@ describe('スキルシステム', () => {
       executeActiveSkills({
         attackerState: heroState,
         defenderState: enemyState,
+        skillEffects: commonSkillEffectsFixtures,
         turn: 1,
       });
 
@@ -104,6 +101,7 @@ describe('スキルシステム', () => {
       executeActiveSkills({
         attackerState: heroState,
         defenderState: enemyState,
+        skillEffects: commonSkillEffectsFixtures,
         turn: 1,
       });
       // TODO: duration が更新される
@@ -134,6 +132,7 @@ describe('スキルシステム', () => {
         attackerState: heroState,
         damageDealt: 30,
         damageReceived: 20,
+        skillEffects: commonSkillEffectsFixtures,
         turn: 1,
       });
 
@@ -166,6 +165,7 @@ describe('スキルシステム', () => {
         attackerState: heroState,
         damageDealt: 30,
         damageReceived: 20,
+        skillEffects: commonSkillEffectsFixtures,
         turn: 1,
       });
 
@@ -194,6 +194,7 @@ describe('スキルシステム', () => {
         attackerState: heroState,
         damageDealt: null,
         damageReceived: null,
+        skillEffects: commonSkillEffectsFixtures,
         turn: 1,
       });
 
