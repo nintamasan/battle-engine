@@ -1,6 +1,9 @@
 import type { CalculatedSkillEffect } from './types';
 import { getAwakeningRatio } from './state/awakening';
-import { calculateSkillEffects, type SkillEffect } from './state/skillEffect';
+import {
+  calculateSkillEffects,
+  type SkillEffectMap,
+} from './state/skillEffect';
 import type { Character } from '../character';
 
 export type CharacterState = {
@@ -30,7 +33,7 @@ export function calculateState({
   turn,
 }: {
   beforeState: CharacterState;
-  skillEffects: Record<string, SkillEffect>;
+  skillEffects: SkillEffectMap;
   turn: number;
 }): [CharacterState, Omit<CalculatedSkillEffect, 'target'>[]] {
   const stats = beforeState.stats;

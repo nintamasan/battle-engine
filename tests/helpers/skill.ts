@@ -1,6 +1,6 @@
-import type { SkillEffect } from 'src/battle-system/state/skillEffect';
+import type { SkillEffectMap } from 'src/battle-system/state/skillEffect';
 
-export const commonSkillEffectsFixtures: Record<string, SkillEffect> = {
+export const commonSkillEffectsFixtures: SkillEffectMap = {
   poison: {
     type: 'active',
     name: '毒のダメージ',

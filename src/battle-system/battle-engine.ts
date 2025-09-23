@@ -14,7 +14,7 @@ import {
 import { executeActiveSkills, executePassiveSkills } from './skill';
 import { executeAttack } from './attack';
 import type { Character } from '../character';
-import type { SkillEffect } from './state/skillEffect.js';
+import type { SkillEffectMap } from './state/skillEffect.js';
 import type { ElementRelations } from './element.js';
 
 export type BattleConfig = {
@@ -22,7 +22,7 @@ export type BattleConfig = {
   baseDamageRatio: number; // 基本ダメージの比率（デフォルト1/5）
 
   elemetRelations: ElementRelations;
-  skillEffects: Record<string, SkillEffect>;
+  skillEffects: SkillEffectMap;
 
   // tmp
   logger?: typeof console;

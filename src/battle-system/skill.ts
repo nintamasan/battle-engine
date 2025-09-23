@@ -1,5 +1,5 @@
 import type { CharacterState } from './state';
-import type { SkillEffect } from './state/skillEffect';
+import type { SkillEffectMap } from './state/skillEffect';
 import type { ExecutedSkill } from './types';
 import { z } from 'zod';
 
@@ -38,7 +38,7 @@ export function executeActiveSkills({
 }: {
   attackerState: CharacterState;
   defenderState: CharacterState;
-  skillEffects: Record<string, SkillEffect>;
+  skillEffects: SkillEffectMap;
   turn: number;
 }): [CharacterState, ExecutedSkill[]] {
   const skillSuccessRate = calculateSkillSuccessRate({
@@ -92,7 +92,7 @@ export function executePassiveSkills({
   // defenderState: CharacterState;
   damageDealt: number | null;
   damageReceived: number | null;
-  skillEffects: Record<string, SkillEffect>;
+  skillEffects: SkillEffectMap;
   turn: number;
 }): {
   attackerState: CharacterState;

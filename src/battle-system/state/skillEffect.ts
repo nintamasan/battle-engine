@@ -25,6 +25,7 @@ export type SkillEffect = {
       })
     | undefined;
 };
+export type SkillEffectMap = Record<string, SkillEffect>;
 
 export function calculateSkillEffects({
   state,
@@ -32,7 +33,7 @@ export function calculateSkillEffects({
 }: {
   state: CharacterState;
   turn: number;
-  skillEffects: Record<string, SkillEffect>;
+  skillEffects: SkillEffectMap;
 }): [CharacterState, CalculatedSkillEffect[]] {
   const affectedEffectsCounter: { [x in string]?: number } = {};
   const calculatedSkillEffects: CalculatedSkillEffect[] = [];
