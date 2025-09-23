@@ -1,5 +1,4 @@
 import type { CharacterState } from './state';
-import type { SkillEffectType } from './state/skillEffect';
 import type { Skill } from './skill';
 
 // バトル結果
@@ -24,15 +23,7 @@ export type ExecutedSkill = Skill & {
 
 // 適用されたスキル効果の記録
 export interface CalculatedSkillEffect {
-  type: SkillEffectType;
+  type: string;
   // target: string;
   effect: Partial<CharacterState>; // 適用された効果
-}
-
-// バトル設定
-export interface BattleConfig {
-  maxTurns: number;
-  baseDamageRatio: number; // 基本ダメージの比率（デフォルト1/5）
-  // tmp
-  logger?: typeof console;
 }

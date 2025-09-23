@@ -1,3 +1,4 @@
+import { elementRelationsFixture } from 'tests/helpers/element';
 import { executeAttack } from '../../src/battle-system/attack';
 import { calculateInitialState } from '../../src/battle-system/state';
 import { loadFireHeroineFixture } from '../helpers/fixtures';
@@ -21,11 +22,13 @@ describe('ダメージ計算', () => {
     const equivalentDamage = executeAttack({
       attackerState: equivalentIntelligentEnemyState,
       defenderState: heroState,
+      elementRelations: elementRelationsFixture,
     });
 
     const damage = executeAttack({
       attackerState: enemyState,
       defenderState: heroState,
+      elementRelations: elementRelationsFixture,
     });
 
     expect(damage).toBeLessThan(equivalentDamage);
@@ -49,11 +52,13 @@ describe('ダメージ計算', () => {
     const equivalentDamage = executeAttack({
       attackerState: heroState,
       defenderState: equivalentIntelligentEnemyState,
+      elementRelations: elementRelationsFixture,
     });
 
     const damage = executeAttack({
       attackerState: heroState,
       defenderState: enemyState,
+      elementRelations: elementRelationsFixture,
     });
 
     expect(damage).toEqual(equivalentDamage);
@@ -77,11 +82,13 @@ describe('ダメージ計算', () => {
     const damage = executeAttack({
       attackerState: heroState,
       defenderState: enemyState,
+      elementRelations: elementRelationsFixture,
     });
 
     const equivalentDamage = executeAttack({
       attackerState: heroState,
       defenderState: equivalentIntelligentEnemyState,
+      elementRelations: elementRelationsFixture,
     });
 
     expect(damage).toBeLessThan(equivalentDamage);
@@ -105,11 +112,13 @@ describe('ダメージ計算', () => {
     const damage = executeAttack({
       attackerState: enemyState,
       defenderState: heroState,
+      elementRelations: elementRelationsFixture,
     });
 
     const equivalentDamage = executeAttack({
       attackerState: equivalentIntelligentEnemyState,
       defenderState: heroState,
+      elementRelations: elementRelationsFixture,
     });
 
     expect(damage).toEqual(equivalentDamage);

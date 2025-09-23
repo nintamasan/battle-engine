@@ -1,13 +1,15 @@
-import { Element, ELEMENT_RELATIONS } from '../element';
+import type { ElementRelations } from '../element';
 
 export function getElementMultiplier({
   attackerElement,
   defenderElement,
+  elementRelations,
 }: {
-  attackerElement: Element;
-  defenderElement: Element;
+  attackerElement: string;
+  defenderElement: string;
+  elementRelations: ElementRelations;
 }): number {
-  const relation = ELEMENT_RELATIONS[attackerElement];
+  const relation = elementRelations[attackerElement];
   if (relation.advantage === defenderElement) {
     return 1.5;
   }

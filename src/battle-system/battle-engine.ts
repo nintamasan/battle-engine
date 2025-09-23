@@ -1,7 +1,6 @@
 import {
   type BattleResult,
   type TurnInfo,
-  type BattleConfig,
   CalculatedSkillEffect,
   ExecutedSkill,
 } from './types.js';
@@ -14,7 +13,20 @@ import {
 } from './state';
 import { executeActiveSkills, executePassiveSkills } from './skill';
 import { executeAttack } from './attack';
-import { Character } from '../character';
+import type { Character } from '../character';
+import type { SkillEffectMap } from './state/skillEffect.js';
+import type { ElementRelations } from './element.js';
+
+export type BattleConfig = {
+  maxTurns: number;
+  baseDamageRatio: number; // 基本ダメージの比率（デフォルト1/5）
+
+  elemetRelations: ElementRelations;
+  skillEffects: SkillEffectMap;
+
+  // tmp
+  logger?: typeof console;
+};
 
 export class BattleEngine {
   private config: BattleConfig;
@@ -23,6 +35,12 @@ export class BattleEngine {
     this.config = {
       maxTurns: 12,
       baseDamageRatio: 0.2, // 1/5
+      skillEffects: {},
+      elemetRelations: {
+        fire: { advantage: 'wind', disadvantage: 'water' },
+        water: { advantage: 'fire', disadvantage: 'wind' },
+        wind: { advantage: 'water', disadvantage: 'fire' },
+      },
       ...config,
     };
   }
@@ -141,12 +159,14 @@ export class BattleEngine {
       executeActiveSkills({
         attackerState: beforeHeroState,
         defenderState: beforeEnemyState,
+        skillEffects: this.config.skillEffects,
         turn,
       });
     const [effectedHeroState, executedActiveSkillsToHero] = executeActiveSkills(
       {
         attackerState: beforeEnemyState,
         defenderState: beforeHeroState,
+        skillEffects: this.config.skillEffects,
         turn,
       }
     );
@@ -189,10 +209,12 @@ export class BattleEngine {
     // effects や awakening の影響を受ける
     const [currentHeroState, heroAffects] = calculateState({
       beforeState: beforeHeroState,
+      skillEffects: this.config.skillEffects,
       turn,
     });
     const [currentEnemyState, enemyAffects] = calculateState({
       beforeState: beforeEnemyState,
+      skillEffects: this.config.skillEffects,
       turn,
     });
 
@@ -225,6 +247,7 @@ export class BattleEngine {
         ? executeAttack({
             attackerState: currentHeroState,
             defenderState: currentEnemyState,
+            elementRelations: this.config.elemetRelations,
           })
         : null;
 
@@ -236,10 +259,12 @@ export class BattleEngine {
               // 特殊処理1. 気絶しているので無防蟻
               attackerState: currentEnemyState,
               defenderState: { ...currentHeroState, intelligence: 0 },
+              elementRelations: this.config.elemetRelations,
             })
           : executeAttack({
               attackerState: currentEnemyState,
               defenderState: currentHeroState,
+              elementRelations: this.config.elemetRelations,
             })
         : null;
 
@@ -269,6 +294,7 @@ export class BattleEngine {
       // defenderState: currentEnemyState,
       damageDealt,
       damageReceived,
+      skillEffects: this.config.skillEffects,
       turn,
     });
 

@@ -1,18 +1,21 @@
-import { getElementMultiplier } from './element';
-import { CharacterState } from './state';
+import { type ElementRelations, getElementMultiplier } from './element';
+import type { CharacterState } from './state';
 import { getEffectivenessMultiplier } from './attack/effectiveness';
 
 export function executeAttack({
   attackerState,
   defenderState,
+  elementRelations,
 }: {
   attackerState: CharacterState;
   defenderState: CharacterState;
+  elementRelations: ElementRelations;
 }): number {
   const baseDamage = calculateBaseDamage(attackerState.maxHp);
   const elementMultiplier = getElementMultiplier({
     attackerElement: attackerState.stats.element,
     defenderElement: defenderState.stats.element,
+    elementRelations,
   });
   const intelligenceMultiplier = getEffectivenessMultiplier({
     attackerIntelligence: attackerState.intelligence,

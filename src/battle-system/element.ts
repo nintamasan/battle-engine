@@ -1,47 +1,71 @@
-import z from 'zod';
-
-// 属性の定義
-export const ElementSchema = z.enum(['fire', 'water', 'wind']);
-
-export type Element = z.infer<typeof ElementSchema>;
-
-// 属性の相性関係
-export const ELEMENT_RELATIONS: Record<
-  Element,
-  { advantage: Element; disadvantage: Element }
-> = {
-  fire: { advantage: 'wind', disadvantage: 'water' },
-  water: { advantage: 'fire', disadvantage: 'wind' },
-  wind: { advantage: 'water', disadvantage: 'fire' },
-};
+export type ElementRelations = Record<
+  string,
+  { advantage: string; disadvantage: string }
+>;
 
 export function getElementMultiplier({
   attackerElement,
   defenderElement,
+  elementRelations,
 }: {
-  attackerElement: Element;
-  defenderElement: Element;
+  attackerElement: string;
+  defenderElement: string;
+  elementRelations: ElementRelations;
 }): number {
-  if (isAdvantage(attackerElement, defenderElement)) {
+  if (
+    isAdvantage({
+      from: attackerElement,
+      to: defenderElement,
+      elementRelations,
+    })
+  ) {
     return 1.5;
   }
-  if (isDisadvantage(attackerElement, defenderElement)) {
+  if (
+    isDisadvantage({
+      from: attackerElement,
+      to: defenderElement,
+      elementRelations,
+    })
+  ) {
     return 0.67;
   }
   return 1.0;
 }
 
-export function getAdvantageElement(element: Element): Element {
-  return ELEMENT_RELATIONS[element].advantage;
+export function getAdvantageElement(
+  element: string,
+  elementRelations: ElementRelations
+): string {
+  return elementRelations[element].advantage;
 }
-export function isAdvantage(from: Element, to: Element): boolean {
-  return getAdvantageElement(from) === to;
+export function isAdvantage({
+  from,
+  to,
+  elementRelations,
+}: {
+  from: string;
+  to: string;
+  elementRelations: ElementRelations;
+}): boolean {
+  return getAdvantageElement(from, elementRelations) === to;
 }
 
-export function getDisadvantageElement(element: Element): Element {
-  return ELEMENT_RELATIONS[element].disadvantage;
+export function getDisadvantageElement(
+  element: string,
+  elementRelations: ElementRelations
+): string {
+  return elementRelations[element].disadvantage;
 }
 
-export function isDisadvantage(from: Element, to: Element): boolean {
-  return getDisadvantageElement(from) === to;
+export function isDisadvantage({
+  from,
+  to,
+  elementRelations,
+}: {
+  from: string;
+  to: string;
+  elementRelations: ElementRelations;
+}): boolean {
+  return getDisadvantageElement(from, elementRelations) === to;
 }

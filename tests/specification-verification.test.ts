@@ -6,7 +6,6 @@ import {
   loadWaterHeroineFixture,
 } from './helpers/fixtures';
 import { Character } from '../src/character';
-import { addCommonSkillEffects } from './helpers/skill';
 
 const trashEnemyStats: Omit<Character, 'element'> = {
   id: 'normal',
@@ -36,10 +35,6 @@ const bossEnemyStats: Omit<Character, 'element'> = {
  * これに対してデバフや状態異常を導入予定である
  */
 describe('仕様要求の検証', () => {
-  beforeAll(() => {
-    addCommonSkillEffects();
-  });
-
   describe('雑魚敵（ヒロインの70%）に対する検証', () => {
     describe('ヒロイン1（体力1000・判断力20・精神力60）', () => {
       const heroStats = loadFireHeroineFixture();

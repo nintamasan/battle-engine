@@ -4,13 +4,9 @@ import {
 } from '../../../src/battle-system/state';
 import { calculateSkillEffects } from '../../../src/battle-system/state/skillEffect';
 import { loadFireHeroineFixture } from '../../helpers/fixtures';
-import { addCommonSkillEffects } from '../../helpers/skill';
+import { commonSkillEffectsFixtures } from '../../helpers/skill';
 
 describe('SkillEffect', () => {
-  beforeAll(() => {
-    addCommonSkillEffects();
-  });
-
   it('毒付与スキルが体力の10%ダメージを与える', () => {
     const state: CharacterState = calculateInitialState({
       ...loadFireHeroineFixture(),
@@ -25,6 +21,7 @@ describe('SkillEffect', () => {
 
     const [currentState] = calculateSkillEffects({
       state,
+      skillEffects: commonSkillEffectsFixtures,
       turn: 1,
     });
     const poisonDamage = 1000 * 0.1; // HPの10%
@@ -46,6 +43,7 @@ describe('SkillEffect', () => {
 
     const [currentState] = calculateSkillEffects({
       state,
+      skillEffects: commonSkillEffectsFixtures,
       turn: 1,
     });
     expect(currentState.intelligence).toBe(50); // 100 * 0.5
@@ -71,6 +69,7 @@ describe('SkillEffect', () => {
 
     const [currentState] = calculateSkillEffects({
       state,
+      skillEffects: commonSkillEffectsFixtures,
       turn: 1,
     });
     expect(currentState.intelligence).toBe(25); // 100 * 0.5 * 0.5
@@ -98,6 +97,7 @@ describe('SkillEffect', () => {
 
     const [currentState] = calculateSkillEffects({
       state,
+      skillEffects: commonSkillEffectsFixtures,
       turn: 1,
     });
     const poisonDamage = 1000 * 0.1; // HPの10%（1回分のみ）
