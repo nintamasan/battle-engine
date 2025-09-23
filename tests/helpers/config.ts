@@ -1,4 +1,4 @@
-import { BattleConfig } from '../../src/battle-system/types.js';
+import { BattleConfig } from 'src/index.js';
 import { commonSkillEffectsFixtures } from './skill.js';
 
 export const defaultEngineConfig: Partial<BattleConfig> = {

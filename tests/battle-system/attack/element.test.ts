@@ -1,7 +1,5 @@
-import {
-  Element,
-  getElementMultiplier,
-} from '../../../src/battle-system/element';
+import { elementRelationsFixture } from 'tests/helpers/element';
+import { getElementMultiplier } from '../../../src/battle-system/element';
 
 describe('属性相性システム', () => {
   test.each([
@@ -13,8 +11,9 @@ describe('属性相性システム', () => {
     ({ attackerElement, defenderElement, expected }) => {
       expect(
         getElementMultiplier({
-          attackerElement: attackerElement as Element,
-          defenderElement: defenderElement as Element,
+          attackerElement: attackerElement,
+          defenderElement: defenderElement,
+          elementRelations: elementRelationsFixture,
         })
       ).toBeCloseTo(expected, 2);
     }

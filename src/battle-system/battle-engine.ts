@@ -1,7 +1,6 @@
 import {
   type BattleResult,
   type TurnInfo,
-  type BattleConfig,
   CalculatedSkillEffect,
   ExecutedSkill,
 } from './types.js';
@@ -14,7 +13,20 @@ import {
 } from './state';
 import { executeActiveSkills, executePassiveSkills } from './skill';
 import { executeAttack } from './attack';
-import { Character } from '../character';
+import type { Character } from '../character';
+import type { SkillEffect } from './state/skillEffect.js';
+import type { ElementRelations } from './element.js';
+
+export type BattleConfig = {
+  maxTurns: number;
+  baseDamageRatio: number; // 基本ダメージの比率（デフォルト1/5）
+
+  elemetRelations: ElementRelations;
+  skillEffects: Record<string, SkillEffect>;
+
+  // tmp
+  logger?: typeof console;
+};
 
 export class BattleEngine {
   private config: BattleConfig;
@@ -24,6 +36,11 @@ export class BattleEngine {
       maxTurns: 12,
       baseDamageRatio: 0.2, // 1/5
       skillEffects: {},
+      elemetRelations: {
+        fire: { advantage: 'wind', disadvantage: 'water' },
+        water: { advantage: 'fire', disadvantage: 'wind' },
+        wind: { advantage: 'water', disadvantage: 'fire' },
+      },
       ...config,
     };
   }
@@ -230,6 +247,7 @@ export class BattleEngine {
         ? executeAttack({
             attackerState: currentHeroState,
             defenderState: currentEnemyState,
+            elementRelations: this.config.elemetRelations,
           })
         : null;
 
@@ -241,10 +259,12 @@ export class BattleEngine {
               // 特殊処理1. 気絶しているので無防蟻
               attackerState: currentEnemyState,
               defenderState: { ...currentHeroState, intelligence: 0 },
+              elementRelations: this.config.elemetRelations,
             })
           : executeAttack({
               attackerState: currentEnemyState,
               defenderState: currentHeroState,
+              elementRelations: this.config.elemetRelations,
             })
         : null;
 
