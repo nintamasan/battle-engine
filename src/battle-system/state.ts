@@ -88,7 +88,7 @@ function calculateAwakenedState({
           startKey: 'start_physical_attack_awareness',
           endKey: 'end_physical_attack_awareness',
         })) /
-        8
+        5
     ),
     magicAttack: Math.floor(
       (stats.vitality *
@@ -99,7 +99,7 @@ function calculateAwakenedState({
           startKey: 'start_magic_attack_awareness',
           endKey: 'end_magic_attack_awareness',
         })) /
-        8
+        5
     ),
   };
 }

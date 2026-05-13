@@ -30,7 +30,7 @@ describe('ダメージ計算', () => {
       elementRelations: elementRelationsFixture,
     });
 
-    expect(damage).toBe(80);
+    expect(damage).toBe(128);
   });
 
   it('attack_type が magic の場合は magicAttack を使う', () => {
@@ -59,7 +59,7 @@ describe('ダメージ計算', () => {
       elementRelations: elementRelationsFixture,
     });
 
-    expect(damage).toBe(20);
+    expect(damage).toBe(32);
   });
 
   it('ヒロインの判断力が高い場合、ヒロインが受けるダメージが軽減される', () => {

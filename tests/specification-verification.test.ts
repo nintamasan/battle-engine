@@ -115,8 +115,8 @@ describe('仕様要求の検証', () => {
         const result = engine.runBattle({ heroStats, enemyStats });
 
         expect(result.result).toEqual('victory');
-        // 低体力かつ攻撃力も別 awareness になったので時間がかかる
-        expect(result.turns.length).toBeLessThanOrEqual(6);
+        // 低体力なので時間がかかるのは仕方ない
+        expect(result.turns.length).toBeLessThanOrEqual(3 + 1);
       });
 
       it('同属性で4ターン以上かかって勝利', () => {

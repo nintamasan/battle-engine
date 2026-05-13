@@ -22,8 +22,8 @@ describe('戦闘中ステータス計算', () => {
     });
 
     expect(state.maxHp).toBe(400);
-    expect(state.physicalAttack).toBe(40);
-    expect(state.magicAttack).toBe(20);
+    expect(state.physicalAttack).toBe(64);
+    expect(state.magicAttack).toBe(32);
     expect(state.hit).toBe(150);
     expect(state.evasion).toBe(100);
     expect(state.spiritDefense).toBe(180);
@@ -54,7 +54,7 @@ describe('戦闘中ステータス計算', () => {
     });
 
     expect(state.maxHp).toBe(320);
-    expect(state.physicalAttack).toBe(60);
-    expect(state.magicAttack).toBe(30);
+    expect(state.physicalAttack).toBe(96);
+    expect(state.magicAttack).toBe(48);
   });
 });

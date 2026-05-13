@@ -100,8 +100,8 @@
 - 現在 HP:
   - 最大 HP からダメージの合計値を引いたもの。0 以下になると敗北
 - 攻撃力:
-  - 物理攻撃力は `体力 * physical_attack_awareness / 8` で算出する
-  - 魔法攻撃力は `体力 * magic_attack_awareness / 8` で算出する
+  - 物理攻撃力は `体力 * physical_attack_awareness / 5` で算出する
+  - 魔法攻撃力は `体力 * magic_attack_awareness / 5` で算出する
   - 通常攻撃では `attack_type` が `physical` なら物理攻撃力、`magic` なら魔法攻撃力を基本ダメージにする
 - 命中:
   - `判断力 * hit_awareness` で算出する

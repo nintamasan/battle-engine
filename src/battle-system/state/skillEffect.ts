@@ -54,6 +54,33 @@ export function calculateSkillEffects({
 
         // スキル効果を適用
         state = { ...state, ...appliedEffect };
+        if (appliedEffect.intelligence !== undefined) {
+          state = {
+            ...state,
+            hit:
+              appliedEffect.hit ??
+              Math.floor(
+                appliedEffect.intelligence * state.stats.awakening.hit_awareness
+              ),
+            evasion:
+              appliedEffect.evasion ??
+              Math.floor(
+                appliedEffect.intelligence *
+                  state.stats.awakening.evasion_awareness
+              ),
+          };
+        }
+        if (appliedEffect.spirit !== undefined) {
+          state = {
+            ...state,
+            spiritDefense:
+              appliedEffect.spiritDefense ??
+              Math.floor(
+                appliedEffect.spirit *
+                  state.stats.awakening.spirit_defense_awareness
+              ),
+          };
+        }
 
         // TODO: どういうデバフが適用されたかを記録する
         calculatedSkillEffects.push({
