@@ -2,7 +2,61 @@ import z from 'zod';
 
 const AwarenessValueSchema = z.number().min(0);
 
-export const AwakeningSchema = z
+const HpAwarenessSchema = z.union([
+  z
+    .object({
+      hp_awareness: AwarenessValueSchema,
+      start_hp_awareness: z.never().optional(),
+      end_hp_awareness: z.never().optional(),
+    })
+    .passthrough(),
+  z
+    .object({
+      hp_awareness: z.never().optional(),
+      start_hp_awareness: AwarenessValueSchema,
+      end_hp_awareness: AwarenessValueSchema,
+      turn_to_awake: z.number().int().min(1),
+    })
+    .passthrough(),
+]);
+
+const PhysicalAttackAwarenessSchema = z.union([
+  z
+    .object({
+      physical_attack_awareness: AwarenessValueSchema,
+      start_physical_attack_awareness: z.never().optional(),
+      end_physical_attack_awareness: z.never().optional(),
+    })
+    .passthrough(),
+  z
+    .object({
+      physical_attack_awareness: z.never().optional(),
+      start_physical_attack_awareness: AwarenessValueSchema,
+      end_physical_attack_awareness: AwarenessValueSchema,
+      turn_to_awake: z.number().int().min(1),
+    })
+    .passthrough(),
+]);
+
+const MagicAttackAwarenessSchema = z.union([
+  z
+    .object({
+      magic_attack_awareness: AwarenessValueSchema,
+      start_magic_attack_awareness: z.never().optional(),
+      end_magic_attack_awareness: z.never().optional(),
+    })
+    .passthrough(),
+  z
+    .object({
+      magic_attack_awareness: z.never().optional(),
+      start_magic_attack_awareness: AwarenessValueSchema,
+      end_magic_attack_awareness: AwarenessValueSchema,
+      turn_to_awake: z.number().int().min(1),
+    })
+    .passthrough(),
+]);
+
+const AwakeningBaseSchema = z
   .object({
     hp_awareness: AwarenessValueSchema.optional(),
     start_hp_awareness: AwarenessValueSchema.optional(),
@@ -18,68 +72,13 @@ export const AwakeningSchema = z
     evasion_awareness: AwarenessValueSchema,
     spirit_defense_awareness: AwarenessValueSchema,
   })
-  .strict()
-  .superRefine((awakening, ctx) => {
-    validateAwarenessSource({
-      awakening,
-      ctx,
-      fixedKey: 'hp_awareness',
-      startKey: 'start_hp_awareness',
-      endKey: 'end_hp_awareness',
-    });
-    validateAwarenessSource({
-      awakening,
-      ctx,
-      fixedKey: 'physical_attack_awareness',
-      startKey: 'start_physical_attack_awareness',
-      endKey: 'end_physical_attack_awareness',
-    });
-    validateAwarenessSource({
-      awakening,
-      ctx,
-      fixedKey: 'magic_attack_awareness',
-      startKey: 'start_magic_attack_awareness',
-      endKey: 'end_magic_attack_awareness',
-    });
-  });
+  .strict();
+
+export const AwakeningSchema = AwakeningBaseSchema.and(HpAwarenessSchema)
+  .and(PhysicalAttackAwarenessSchema)
+  .and(MagicAttackAwarenessSchema);
 
 export type Awakening = z.infer<typeof AwakeningSchema>;
-
-function validateAwarenessSource({
-  awakening,
-  ctx,
-  fixedKey,
-  startKey,
-  endKey,
-}: {
-  awakening: {
-    turn_to_awake?: number;
-    [key: string]: number | undefined;
-  };
-  ctx: z.RefinementCtx;
-  fixedKey: string;
-  startKey: string;
-  endKey: string;
-}) {
-  const hasFixed = awakening[fixedKey] !== undefined;
-  const hasStart = awakening[startKey] !== undefined;
-  const hasEnd = awakening[endKey] !== undefined;
-
-  if (hasFixed && (hasStart || hasEnd)) {
-    ctx.addIssue({
-      code: 'custom',
-      path: [fixedKey],
-      message: `${fixedKey} cannot be combined with ${startKey}/${endKey}`,
-    });
-  }
-  if (!hasFixed && !(hasStart && hasEnd && awakening.turn_to_awake)) {
-    ctx.addIssue({
-      code: 'custom',
-      path: [fixedKey],
-      message: `${fixedKey} or ${startKey}/${endKey}/turn_to_awake is required`,
-    });
-  }
-}
 
 export function getAwareness({
   awakening,
