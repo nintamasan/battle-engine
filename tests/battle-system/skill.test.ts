@@ -88,6 +88,44 @@ describe('スキルシステム', () => {
       // TODO: duration が更新される
       expect(enemyState.stats.activeEffects.length).toBe(1); // 1つの毒付与のみ適用される
     });
+
+    it('スキル成功率の防御側に spiritDefense を使う', () => {
+      const heroState: CharacterState = calculateInitialState({
+        ...loadWaterHeroineFixture(),
+        skills: [
+          {
+            name: '判断力低下',
+            effect: 'intelligence-down',
+            duration: 1,
+            stackable: false,
+            coolTime: 0,
+            coolDownEndTurn: 0,
+          },
+        ],
+      });
+      const enemyState: CharacterState = calculateInitialState({
+        ...loadFireHeroineFixture(),
+        spirit: 100,
+        awakening: {
+          hp_awareness: 10,
+          physical_attack_awareness: 10,
+          magic_attack_awareness: 1,
+          hit_awareness: 1,
+          evasion_awareness: 1,
+          spirit_defense_awareness: 0,
+        },
+      });
+
+      executeActiveSkills({
+        attackerState: heroState,
+        defenderState: enemyState,
+        skillEffects: commonSkillEffectsFixtures,
+        turn: 1,
+      });
+
+      expect(enemyState.stats.activeEffects).toHaveLength(1);
+      expect(enemyState.stats.activeEffects[0].type).toBe('intelligence-down');
+    });
   });
 
   describe('executePassiveSkills', () => {

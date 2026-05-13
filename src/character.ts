@@ -12,6 +12,7 @@ export const CharacterSchema = z
     description: z.string().optional(),
 
     element: z.string(),
+    attack_type: z.enum(['physical', 'magic']),
 
     // ステータス
     vitality: z.number().int().min(0), // 体力

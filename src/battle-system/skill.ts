@@ -42,7 +42,7 @@ export function executeActiveSkills({
     if (
       getLessAttackableRandomResult({
         attacker: attackerState.intelligence,
-        defender: defenderState.spirit,
+        defender: defenderState.spiritDefense,
         message: skill.name,
       })
     ) {

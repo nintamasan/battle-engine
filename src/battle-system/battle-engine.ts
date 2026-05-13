@@ -258,7 +258,7 @@ export class BattleEngine {
           ? executeAttack({
               // 特殊処理1. 気絶しているので無防蟻
               attackerState: currentEnemyState,
-              defenderState: { ...currentHeroState, intelligence: 0 },
+              defenderState: { ...currentHeroState, evasion: 0 },
               elementRelations: this.config.elementRelations,
             })
           : executeAttack({

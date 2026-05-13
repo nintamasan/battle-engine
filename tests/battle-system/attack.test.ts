@@ -4,6 +4,64 @@ import { calculateInitialState } from '../../src/battle-system/state';
 import { loadFireHeroineFixture } from '../helpers/fixtures';
 
 describe('ダメージ計算', () => {
+  it('attack_type が physical の場合は physicalAttack を使う', () => {
+    const attackerState = calculateInitialState({
+      ...loadFireHeroineFixture(),
+      attack_type: 'physical',
+      vitality: 80,
+      intelligence: 100,
+      awakening: {
+        hp_awareness: 10,
+        physical_attack_awareness: 8,
+        magic_attack_awareness: 2,
+        hit_awareness: 1,
+        evasion_awareness: 1,
+        spirit_defense_awareness: 1,
+      },
+    });
+    const defenderState = calculateInitialState({
+      ...loadFireHeroineFixture(),
+      intelligence: 100,
+    });
+
+    const damage = executeAttack({
+      attackerState,
+      defenderState,
+      elementRelations: elementRelationsFixture,
+    });
+
+    expect(damage).toBe(128);
+  });
+
+  it('attack_type が magic の場合は magicAttack を使う', () => {
+    const attackerState = calculateInitialState({
+      ...loadFireHeroineFixture(),
+      attack_type: 'magic',
+      vitality: 80,
+      intelligence: 100,
+      awakening: {
+        hp_awareness: 10,
+        physical_attack_awareness: 8,
+        magic_attack_awareness: 2,
+        hit_awareness: 1,
+        evasion_awareness: 1,
+        spirit_defense_awareness: 1,
+      },
+    });
+    const defenderState = calculateInitialState({
+      ...loadFireHeroineFixture(),
+      intelligence: 100,
+    });
+
+    const damage = executeAttack({
+      attackerState,
+      defenderState,
+      elementRelations: elementRelationsFixture,
+    });
+
+    expect(damage).toBe(32);
+  });
+
   it('ヒロインの判断力が高い場合、ヒロインが受けるダメージが軽減される', () => {
     const heroState = calculateInitialState({
       ...loadFireHeroineFixture(),

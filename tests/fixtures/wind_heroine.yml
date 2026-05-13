@@ -2,6 +2,7 @@ id: wind_heroine
 name: 風のヒロイン
 type: hero
 element: wind
+attack_type: physical
 
 vitality: 60
 intelligence: 60
@@ -9,7 +10,12 @@ spirit: 80
 fatigue: 0
 
 awakening:
-  ratio: 10
+  hp_awareness: 10
+  physical_attack_awareness: 10
+  magic_attack_awareness: 1
+  hit_awareness: 1
+  evasion_awareness: 1
+  spirit_defense_awareness: 1
 
 skills: []
 activeEffects: []

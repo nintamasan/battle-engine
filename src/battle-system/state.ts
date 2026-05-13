@@ -1,5 +1,5 @@
 import type { CalculatedSkillEffect } from './types';
-import { getAwakeningRatio } from './state/awakening';
+import { getAwareness } from './state/awakening';
 import {
   calculateSkillEffects,
   type SkillEffectMap,
@@ -8,18 +8,26 @@ import type { Character } from '../character';
 
 export type CharacterState = {
   maxHp: number;
+  physicalAttack: number;
+  magicAttack: number;
   totalDamage: number;
   intelligence: number;
+  hit: number;
+  evasion: number;
   spirit: number;
+  spiritDefense: number;
   stats: Character;
 };
 
 export function calculateInitialState(stats: Character): CharacterState {
   return {
-    maxHp: calculateMaxHp({ stats, turn: 1 }),
+    ...calculateAwakenedState({ stats, turn: 1 }),
     totalDamage: 0, //
     intelligence: stats.intelligence,
+    hit: calculateHit(stats),
+    evasion: calculateEvasion(stats),
     spirit: stats.spirit,
+    spiritDefense: calculateSpiritDefense(stats),
     stats: {
       ...stats,
       skills: stats.skills.map(skill => ({ ...skill, coolDownEndTurn: 0 })), // クールタイム初期化
@@ -41,10 +49,13 @@ export function calculateState({
   // デバフ適用前の state の計算
   let state: CharacterState = {
     ...beforeState,
-    maxHp: calculateMaxHp({ stats, turn }),
+    ...calculateAwakenedState({ stats, turn }),
     // デバフのリセット
     intelligence: stats.intelligence,
+    hit: calculateHit(stats),
+    evasion: calculateEvasion(stats),
     spirit: stats.spirit,
+    spiritDefense: calculateSpiritDefense(stats),
     // （初回限定）疲労度による処理
     ...(turn === 1
       ? {
@@ -59,6 +70,40 @@ export function calculateState({
   return calculateSkillEffects({ state, turn, skillEffects });
 }
 
+function calculateAwakenedState({
+  stats,
+  turn,
+}: {
+  stats: Character;
+  turn: number;
+}): Pick<CharacterState, 'maxHp' | 'physicalAttack' | 'magicAttack'> {
+  return {
+    maxHp: calculateMaxHp({ stats, turn }),
+    physicalAttack: Math.floor(
+      (stats.vitality *
+        getAwareness({
+          awakening: stats.awakening,
+          turn,
+          fixedKey: 'physical_attack_awareness',
+          startKey: 'start_physical_attack_awareness',
+          endKey: 'end_physical_attack_awareness',
+        })) /
+        5
+    ),
+    magicAttack: Math.floor(
+      (stats.vitality *
+        getAwareness({
+          awakening: stats.awakening,
+          turn,
+          fixedKey: 'magic_attack_awareness',
+          startKey: 'start_magic_attack_awareness',
+          endKey: 'end_magic_attack_awareness',
+        })) /
+        5
+    ),
+  };
+}
+
 function calculateMaxHp({
   stats,
   turn,
@@ -67,8 +112,27 @@ function calculateMaxHp({
   turn: number;
 }): number {
   return Math.floor(
-    stats.vitality * getAwakeningRatio({ awakening: stats.awakening, turn })
+    stats.vitality *
+      getAwareness({
+        awakening: stats.awakening,
+        turn,
+        fixedKey: 'hp_awareness',
+        startKey: 'start_hp_awareness',
+        endKey: 'end_hp_awareness',
+      })
   );
+}
+
+function calculateHit(stats: Character): number {
+  return Math.floor(stats.intelligence * stats.awakening.hit_awareness);
+}
+
+function calculateEvasion(stats: Character): number {
+  return Math.floor(stats.intelligence * stats.awakening.evasion_awareness);
+}
+
+function calculateSpiritDefense(stats: Character): number {
+  return Math.floor(stats.spirit * stats.awakening.spirit_defense_awareness);
 }
 
 export function getRemainedHp(state: CharacterState): number {
@@ -78,8 +142,11 @@ export function getRemainedHp(state: CharacterState): number {
 export function formatState(state: CharacterState): string {
   return [
     `HP: ${getRemainedHp(state)}/${state.maxHp}`,
-    `Intelligence: ${state.intelligence}/${state.stats.intelligence}`,
-    `Spirit: ${state.spirit}/${state.stats.spirit}`,
+    `PhysicalAttack: ${state.physicalAttack}`,
+    `MagicAttack: ${state.magicAttack}`,
+    `Hit: ${state.hit}`,
+    `Evasion: ${state.evasion}`,
+    `SpiritDefense: ${state.spiritDefense}`,
   ].join(' ');
   // TODO: debuff とかの情報も出せれば
 }
