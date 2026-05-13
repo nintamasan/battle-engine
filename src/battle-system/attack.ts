@@ -11,22 +11,23 @@ export function executeAttack({
   defenderState: CharacterState;
   elementRelations: ElementRelations;
 }): number {
-  const baseDamage = calculateBaseDamage(attackerState.maxHp);
+  const baseDamage = calculateBaseDamage(attackerState);
   const elementMultiplier = getElementMultiplier({
     attackerElement: attackerState.stats.element,
     defenderElement: defenderState.stats.element,
     elementRelations,
   });
   const intelligenceMultiplier = getEffectivenessMultiplier({
-    attackerIntelligence: attackerState.intelligence,
-    defenderIntelligence: defenderState.intelligence,
+    attackerIntelligence: attackerState.hit,
+    defenderIntelligence: defenderState.evasion,
   });
 
   return Math.floor(baseDamage * elementMultiplier * intelligenceMultiplier);
 }
 
 // 基本ダメージを計算
-function calculateBaseDamage(attackerMaxHp: number): number {
-  // 5ターンほどで決着するように
-  return attackerMaxHp * 0.2;
+function calculateBaseDamage(attackerState: CharacterState): number {
+  return attackerState.stats.attack_type === 'magic'
+    ? attackerState.magicAttack
+    : attackerState.physicalAttack;
 }

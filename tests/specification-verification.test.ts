@@ -10,22 +10,44 @@ import { Character } from '../src/character';
 const trashEnemyStats: Omit<Character, 'element'> = {
   id: 'normal',
   name: '雑魚敵',
+  attack_type: 'physical',
   vitality: 450,
   intelligence: 45,
   spirit: 45,
   fatigue: 0,
-  awakening: { startRatio: 0.5, endRatio: 1, turnToAwake: 5 },
+  awakening: {
+    start_hp_awareness: 0.5,
+    end_hp_awareness: 1,
+    start_physical_attack_awareness: 0.5,
+    end_physical_attack_awareness: 1,
+    magic_attack_awareness: 1,
+    turn_to_awake: 5,
+    hit_awareness: 1,
+    evasion_awareness: 1,
+    spirit_defense_awareness: 1,
+  },
   skills: [],
   activeEffects: [],
 };
 const bossEnemyStats: Omit<Character, 'element'> = {
   id: 'boss',
   name: 'ボス',
+  attack_type: 'physical',
   vitality: 600,
   intelligence: 60,
   spirit: 60,
   fatigue: 0,
-  awakening: { startRatio: 0.5, endRatio: 1, turnToAwake: 5 },
+  awakening: {
+    start_hp_awareness: 0.5,
+    end_hp_awareness: 1,
+    start_physical_attack_awareness: 0.5,
+    end_physical_attack_awareness: 1,
+    magic_attack_awareness: 1,
+    turn_to_awake: 5,
+    hit_awareness: 1,
+    evasion_awareness: 1,
+    spirit_defense_awareness: 1,
+  },
   skills: [],
   activeEffects: [],
 };
@@ -93,8 +115,8 @@ describe('仕様要求の検証', () => {
         const result = engine.runBattle({ heroStats, enemyStats });
 
         expect(result.result).toEqual('victory');
-        // 低体力なので時間がかかるのは仕方ない
-        expect(result.turns.length).toBeLessThanOrEqual(3 + 1);
+        // 低体力かつ攻撃力も別 awareness になったので時間がかかる
+        expect(result.turns.length).toBeLessThanOrEqual(6);
       });
 
       it('同属性で4ターン以上かかって勝利', () => {

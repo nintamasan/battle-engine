@@ -79,7 +79,14 @@ describe('SkillEffect', () => {
     const state: CharacterState = calculateInitialState({
       ...loadFireHeroineFixture(),
       vitality: 100,
-      awakening: { ratio: 10 },
+      awakening: {
+        hp_awareness: 10,
+        physical_attack_awareness: 10,
+        magic_attack_awareness: 1,
+        hit_awareness: 1,
+        evasion_awareness: 1,
+        spirit_defense_awareness: 1,
+      },
       // 本来ありえない
       activeEffects: [
         {
