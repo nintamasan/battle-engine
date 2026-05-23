@@ -34,4 +34,39 @@ export const commonSkillEffectsFixtures: SkillEffectMap = {
       };
     },
   },
+
+  'finishing-strike': {
+    type: 'attack',
+    name: '追撃',
+    description: '相手が倒れている場合でも無防備な相手へ攻撃する',
+    apply: ({ execution, attackerState, defenderState }) => {
+      const attackerHp = attackerState.maxHp - attackerState.totalDamage;
+      const defenderHp = defenderState.maxHp - defenderState.totalDamage;
+      if (execution.canExecute || attackerHp <= 0 || defenderHp > 0) {
+        return undefined;
+      }
+
+      return {
+        ...execution,
+        canExecute: true,
+        triggers: [...execution.triggers, 'finishing-strike'],
+        modifiers: [...execution.modifiers, { type: 'unprotected' }],
+      };
+    },
+  },
+
+  'special-move': {
+    type: 'attack',
+    name: '必殺技',
+    description: '通常攻撃ダメージを2倍にする',
+    apply: ({ execution }) => {
+      if (!execution.canExecute) return undefined;
+
+      return {
+        ...execution,
+        triggers: [...execution.triggers, 'special-move'],
+        modifiers: [...execution.modifiers, { type: 'damage-ratio', value: 2 }],
+      };
+    },
+  },
 };

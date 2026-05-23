@@ -1,7 +1,7 @@
 import { getLessAttackableRandomResult } from './random';
-import type { CharacterState } from './state';
+import { getRemainedHp, type CharacterState } from './state';
 import type { SkillEffectMap } from './state/skillEffect';
-import type { ExecutedSkill } from './types';
+import type { AttackExecution, ExecutedSkill } from './types';
 import { z } from 'zod';
 
 export const SkillSchema = z.object({
@@ -146,4 +146,49 @@ export function executePassiveSkills({
     damageReceived: currentDamageReceived,
     executedSkills,
   };
+}
+
+export function executeAttackSkills({
+  attackerState,
+  defenderState,
+  skillEffects,
+  turn,
+}: {
+  attackerState: CharacterState;
+  defenderState: CharacterState;
+  skillEffects: SkillEffectMap;
+  turn: number;
+}): AttackExecution {
+  let execution: AttackExecution = {
+    canExecute:
+      getRemainedHp(attackerState) > 0 && getRemainedHp(defenderState) > 0,
+    triggers: [],
+    modifiers: [],
+    executedSkills: [],
+  };
+
+  for (const skill of attackerState.stats.skills) {
+    if (skill.coolDownEndTurn > turn) continue;
+
+    const skillEffect = skillEffects[skill.effect];
+    if (!skillEffect) throw new Error(`Unknown skill effect: ${skill.effect}`);
+
+    if (skillEffect.type !== 'attack') continue;
+
+    const nextExecution = skillEffect.apply({
+      execution,
+      attackerState,
+      defenderState,
+      turn,
+    });
+    if (!nextExecution) continue;
+
+    execution = {
+      ...nextExecution,
+      executedSkills: [...nextExecution.executedSkills, { ...skill }],
+    };
+    skill.coolDownEndTurn = turn + skill.coolTime;
+  }
+
+  return execution;
 }

@@ -11,7 +11,11 @@ import {
   formatState,
   getRemainedHp,
 } from './state';
-import { executeActiveSkills, executePassiveSkills } from './skill';
+import {
+  executeActiveSkills,
+  executeAttackSkills,
+  executePassiveSkills,
+} from './skill';
 import { executeAttack } from './attack';
 import type { Character } from '../character';
 import type { SkillEffectMap } from './state/skillEffect.js';
@@ -229,10 +233,22 @@ export class BattleEngine {
       );
     }
 
-    // 特殊処理1. 無防備な一撃
     const heroHp = getRemainedHp(currentHeroState);
-    const enemyHp = getRemainedHp(currentEnemyState);
-    const unprotectedStrike = heroHp <= 0 && enemyHp > 0;
+    const heroAttackExecution = executeAttackSkills({
+      attackerState: currentHeroState,
+      defenderState: currentEnemyState,
+      skillEffects: this.config.skillEffects,
+      turn,
+    });
+    const enemyAttackExecution = executeAttackSkills({
+      attackerState: currentEnemyState,
+      defenderState: currentHeroState,
+      skillEffects: this.config.skillEffects,
+      turn,
+    });
+    const unprotectedStrike = enemyAttackExecution.modifiers.some(
+      modifier => modifier.type === 'unprotected'
+    );
 
     if (unprotectedStrike) {
       this.config?.logger?.debug(
@@ -242,31 +258,29 @@ export class BattleEngine {
 
     // 2-2. ダメージ計算
     // ヒロインの攻撃
-    const damageDealt =
-      heroHp > 0 && enemyHp > 0
-        ? executeAttack({
-            attackerState: currentHeroState,
-            defenderState: currentEnemyState,
-            elementRelations: this.config.elementRelations,
-          })
-        : null;
+    const damageDealt = heroAttackExecution.canExecute
+      ? executeAttack({
+          attackerState: currentHeroState,
+          defenderState: currentEnemyState,
+          elementRelations: this.config.elementRelations,
+          modifiers: heroAttackExecution.modifiers,
+        })
+      : null;
 
     // 敵の攻撃
-    const damageReceived =
-      enemyHp > 0
-        ? unprotectedStrike
-          ? executeAttack({
-              // 特殊処理1. 気絶しているので無防蟻
-              attackerState: currentEnemyState,
-              defenderState: { ...currentHeroState, evasion: 0 },
-              elementRelations: this.config.elementRelations,
-            })
-          : executeAttack({
-              attackerState: currentEnemyState,
-              defenderState: currentHeroState,
-              elementRelations: this.config.elementRelations,
-            })
-        : null;
+    const damageReceived = enemyAttackExecution.canExecute
+      ? executeAttack({
+          attackerState: currentEnemyState,
+          defenderState: currentHeroState,
+          elementRelations: this.config.elementRelations,
+          modifiers: enemyAttackExecution.modifiers,
+        })
+      : null;
+
+    const executedAttackSkills = [
+      ...heroAttackExecution.executedSkills,
+      ...enemyAttackExecution.executedSkills,
+    ];
 
     // すでに倒れている場合はパッシブスキルも発動しない
     if (heroHp <= 0) {
@@ -277,7 +291,7 @@ export class BattleEngine {
         damageReceived,
         heroAffects,
         enemyAffects,
-        executedSkills: [],
+        executedSkills: executedAttackSkills,
         unprotectedStrike,
       };
     }
@@ -299,6 +313,7 @@ export class BattleEngine {
     });
 
     const updatedHeroHp = getRemainedHp(updatedHeroState);
+    const updatedEnemyHp = getRemainedHp(currentEnemyState);
 
     // ダメージ更新
     updatedHeroState.totalDamage =
@@ -313,18 +328,18 @@ export class BattleEngine {
     }
     if (damageDealt !== null) {
       this.config?.logger?.debug(
-        `Enemy HP: ${enemyHp}/${currentEnemyState.maxHp} --> ${updatedDamageDealt} --> ${getRemainedHp(currentEnemyState)}`
+        `Enemy HP: ${updatedEnemyHp}/${currentEnemyState.maxHp} --> ${updatedDamageDealt} --> ${getRemainedHp(currentEnemyState)}`
       );
     }
 
     return {
       afterHeroState: updatedHeroState,
       afterEnemyState: currentEnemyState,
-      damageDealt: updatedDamageReceived,
+      damageDealt: updatedDamageDealt,
       damageReceived: updatedDamageReceived,
       heroAffects,
       enemyAffects,
-      executedSkills,
+      executedSkills: [...executedAttackSkills, ...executedSkills],
       unprotectedStrike,
     };
   }

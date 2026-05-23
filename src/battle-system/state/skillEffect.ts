@@ -1,5 +1,5 @@
 import type { CharacterState } from '../state';
-import type { CalculatedSkillEffect } from '../types';
+import type { AttackExecution, CalculatedSkillEffect } from '../types';
 import { z } from 'zod';
 
 export const AppliedSkillEffectSchema = z.object({
@@ -10,8 +10,8 @@ export const AppliedSkillEffectSchema = z.object({
 
 export type AppliedSkillEffect = z.infer<typeof AppliedSkillEffectSchema>;
 
-export type SkillEffect = {
-  type: 'active' | 'passive';
+type ActiveSkillEffect = {
+  type: 'active';
   name: string;
   description: string;
   apply: (params: {
@@ -25,6 +25,39 @@ export type SkillEffect = {
       })
     | undefined;
 };
+
+type PassiveSkillEffect = {
+  type: 'passive';
+  name: string;
+  description: string;
+  apply: (params: {
+    characterState: CharacterState;
+    damageDealt?: number | null;
+    damageReceived?: number | null;
+  }) =>
+    | (Partial<CharacterState> & {
+        damageDealt?: number | null;
+        damageReceived?: number | null;
+      })
+    | undefined;
+};
+
+export type AttackSkillEffect = {
+  type: 'attack';
+  name: string;
+  description: string;
+  apply: (params: {
+    execution: AttackExecution;
+    attackerState: CharacterState;
+    defenderState: CharacterState;
+    turn: number;
+  }) => AttackExecution | undefined;
+};
+
+export type SkillEffect =
+  | ActiveSkillEffect
+  | PassiveSkillEffect
+  | AttackSkillEffect;
 export type SkillEffectMap = Record<string, SkillEffect>;
 
 export function calculateSkillEffects({
@@ -43,6 +76,10 @@ export function calculateSkillEffects({
 
     const skill = skillEffects[effect.type];
     if (skill) {
+      if (skill.type !== 'active') {
+        throw new Error('Non-active skill effect is applied as active effect');
+      }
+
       const appliedCount = affectedEffectsCounter[effect.type] ?? 0;
       if (effect.stackable || appliedCount === 0) {
         affectedEffectsCounter[effect.type] = appliedCount + 1;
