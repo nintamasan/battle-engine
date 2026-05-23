@@ -83,6 +83,7 @@ attack skill は戦闘処理のダメージ計算時に、そのターンの `At
 attack skill はキャラクターの `skills` 定義順に評価され、クールダウン中の skill は評価しない。
 skill が実際に発動した場合のみ、active / passive skill と同様に event として記録し、`coolDownEndTurn = turn + coolTime` に更新する。
 発動条件を満たさなかった場合、クールダウンは更新しない。
+attack skill effect は攻撃可否や攻撃補正のみを返し、発動記録は attack skill executor が付与する。
 
 - 追撃:
   - 相手が攻撃前に HP 0 以下になり、通常攻撃が実行できない場合でも攻撃可能にする

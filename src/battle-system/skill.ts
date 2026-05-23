@@ -185,6 +185,7 @@ export function executeAttackSkills({
 
     execution = {
       ...nextExecution,
+      triggers: [...execution.triggers, skill.effect],
       executedSkills: [...nextExecution.executedSkills, { ...skill }],
     };
     skill.coolDownEndTurn = turn + skill.coolTime;

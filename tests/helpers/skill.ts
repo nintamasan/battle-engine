@@ -49,7 +49,6 @@ export const commonSkillEffectsFixtures: SkillEffectMap = {
       return {
         ...execution,
         canExecute: true,
-        triggers: [...execution.triggers, 'finishing-strike'],
         modifiers: [...execution.modifiers, { type: 'unprotected' }],
       };
     },
@@ -64,7 +63,6 @@ export const commonSkillEffectsFixtures: SkillEffectMap = {
 
       return {
         ...execution,
-        triggers: [...execution.triggers, 'special-move'],
         modifiers: [...execution.modifiers, { type: 'damage-ratio', value: 2 }],
       };
     },
