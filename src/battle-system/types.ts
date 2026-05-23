@@ -21,6 +21,17 @@ export type ExecutedSkill = Skill & {
   // target: string;
 };
 
+export type AttackModifier =
+  | { type: 'unprotected' }
+  | { type: 'damage-ratio'; value: number };
+
+export type AttackExecution = {
+  canExecute: boolean;
+  triggers: string[];
+  modifiers: AttackModifier[];
+  executedSkills: ExecutedSkill[];
+};
+
 // 適用されたスキル効果の記録
 export interface CalculatedSkillEffect {
   type: string;
