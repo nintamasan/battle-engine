@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BattleEngine } from '../../src/battle-system/battle-engine';
 import { executeAttack } from '../../src/battle-system/attack';
+import { executeAttackSkills } from '../../src/battle-system/skill';
 import {
   calculateInitialState,
   type CharacterState,
@@ -139,5 +140,53 @@ describe('attack execution', () => {
     expect(turn2.executedSkills.map(skill => skill.effect)).not.toContain(
       'special-move'
     );
+  });
+
+  it('attack skill の発動記録は skill effect ではなく executor が付与する', () => {
+    const attackerState = calculateInitialState({
+      ...loadFireHeroineFixture(),
+      skills: [
+        {
+          name: '記録を返さない必殺技',
+          effect: 'special-move-without-trigger',
+          duration: 1,
+          stackable: false,
+          coolTime: 1,
+          coolDownEndTurn: 0,
+        },
+      ],
+    });
+    const defenderState = calculateInitialState(loadWaterHeroineFixture());
+
+    const execution = executeAttackSkills({
+      attackerState,
+      defenderState,
+      skillEffects: {
+        ...commonSkillEffectsFixtures,
+        'special-move-without-trigger': {
+          type: 'attack',
+          name: '記録を返さない必殺技',
+          description: 'modifier だけを返す',
+          apply: ({ execution }) => {
+            if (!execution.canExecute) return undefined;
+
+            return {
+              ...execution,
+              modifiers: [
+                ...execution.modifiers,
+                { type: 'damage-ratio', value: 2 },
+              ],
+            };
+          },
+        },
+      },
+      turn: 1,
+    });
+
+    expect(execution.triggers).toEqual(['special-move-without-trigger']);
+    expect(execution.executedSkills.map(skill => skill.effect)).toEqual([
+      'special-move-without-trigger',
+    ]);
+    expect(attackerState.stats.skills[0].coolDownEndTurn).toBe(2);
   });
 });
